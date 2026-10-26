@@ -1,0 +1,431 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Pretty CMS tokens (the "Kiln" palette), see DESIGN_TOKENS.md. Names follow shadcn so its components pick them up:
+   `primary` is the brand ember; shadcn's `accent` is only a subtle hover fill. */
+:root {
+  color-scheme: light;
+  --background: oklch(0.97 0.015 290);
+  --glow-1: #ffd1c1;
+  --glow-2: #ffd8e9;
+  --foreground: #14151f;
+  --card: #ffffff;
+  --card-foreground: #14151f;
+  --popover: #ffffff;
+  --popover-foreground: #14151f;
+  --primary: #d24100;
+  --primary-foreground: #ffffff;
+  --secondary: oklch(0.95 0.012 290);
+  --secondary-foreground: #14151f;
+  --muted: oklch(0.95 0.012 290);
+  --muted-foreground: #61626f;
+  --accent: oklch(0.95 0.012 290);
+  --accent-foreground: #14151f;
+  --destructive: #d03b3b;
+  --border: rgb(20 21 31 / 0.08);
+  --input: rgb(20 21 31 / 0.1);
+  --ring: #d24100;
+  --glass: rgb(255 255 255 / 0.72);
+  --shadow-card: 0 1px 2px rgb(20 21 31 / 0.04), 0 8px 24px rgb(80 70 140 / 0.08);
+  --shadow-card-hover: 0 2px 4px rgb(20 21 31 / 0.05), 0 16px 32px rgb(80 70 140 / 0.12);
+
+  /* Categorical chart slots, fixed order (validated, see DESIGN_TOKENS.md). */
+  --chart-1: #eb6834;
+  --chart-2: #2a78d6;
+  --chart-3: #1baf7a;
+  --chart-4: #6250d6;
+  --chart-5: #eda100;
+  --chart-6: #e87ba4;
+  --chart-7: #008300;
+  --chart-8: #e34948;
+  --chart-grid: rgb(20 21 31 / 0.07);
+
+  /* Sequential ember ramp (map); step 1 sits closest to the surface. */
+  --seq-0: oklch(0.95 0.01 290);
+  --seq-1: oklch(0.9 0.05 45);
+  --seq-2: oklch(0.82 0.1 43);
+  --seq-3: oklch(0.72 0.15 41);
+  --seq-4: oklch(0.62 0.18 39);
+  --seq-5: oklch(0.52 0.17 37);
+
+  --status-good: #0ca30c;
+  --status-warning: #fab219;
+  --status-serious: #ec835a;
+  --status-critical: #d03b3b;
+  --delta-up: #006300;
+  --delta-down: #b42828;
+
+  --radius: 0.75rem;
+  --sidebar: var(--glass);
+  --sidebar-foreground: #14151f;
+  --sidebar-primary: #d24100;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: oklch(0.95 0.012 290);
+  --sidebar-accent-foreground: #14151f;
+  --sidebar-border: rgb(20 21 31 / 0.08);
+  --sidebar-ring: #d24100;
+}
+
+.dark {
+  color-scheme: dark;
+  --background: #0e0e18;
+  --glow-1: oklch(0.32 0.09 40 / 0.55);
+  --glow-2: oklch(0.28 0.07 300 / 0.5);
+  --foreground: oklch(0.95 0.01 280);
+  --card: #1b1c26;
+  --card-foreground: oklch(0.95 0.01 280);
+  --popover: oklch(0.27 0.02 280);
+  --popover-foreground: oklch(0.95 0.01 280);
+  --primary: #f77036;
+  --primary-foreground: #14151f;
+  --secondary: oklch(0.27 0.02 280);
+  --secondary-foreground: oklch(0.95 0.01 280);
+  --muted: oklch(0.27 0.02 280);
+  --muted-foreground: #9c9dab;
+  --accent: oklch(0.27 0.02 280);
+  --accent-foreground: oklch(0.95 0.01 280);
+  --border: rgb(255 255 255 / 0.07);
+  --input: rgb(255 255 255 / 0.12);
+  --ring: #f77036;
+  --glass: rgb(27 28 38 / 0.72);
+  --shadow-card: 0 0 0 1px rgb(255 255 255 / 0.06);
+  --shadow-card-hover: 0 0 0 1px rgb(255 255 255 / 0.12);
+
+  --chart-1: #d95926;
+  --chart-2: #3987e5;
+  --chart-3: #199e70;
+  --chart-4: #9085e9;
+  --chart-5: #c98500;
+  --chart-6: #d55181;
+  --chart-7: #008300;
+  --chart-8: #e66767;
+  --chart-grid: rgb(255 255 255 / 0.07);
+
+  --seq-0: oklch(0.27 0.02 280);
+  --seq-1: oklch(0.36 0.07 40);
+  --seq-2: oklch(0.46 0.11 40);
+  --seq-3: oklch(0.57 0.15 40);
+  --seq-4: oklch(0.67 0.17 42);
+  --seq-5: oklch(0.78 0.15 45);
+
+  --delta-up: #0ca30c;
+  --delta-down: #e66767;
+
+  --sidebar-foreground: oklch(0.95 0.01 280);
+  --sidebar-primary: #f77036;
+  --sidebar-primary-foreground: #14151f;
+  --sidebar-accent: oklch(0.27 0.02 280);
+  --sidebar-accent-foreground: oklch(0.95 0.01 280);
+  --sidebar-border: rgb(255 255 255 / 0.07);
+  --sidebar-ring: #f77036;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-glass: var(--glass);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-status-good: var(--status-good);
+  --color-status-warning: var(--status-warning);
+  --color-status-serious: var(--status-serious);
+  --color-status-critical: var(--status-critical);
+  --color-delta-up: var(--delta-up);
+  --color-delta-down: var(--delta-down);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --shadow-card: var(--shadow-card);
+  --shadow-card-hover: var(--shadow-card-hover);
+  --font-sans: var(--font-geist-sans);
+  --font-heading: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-inner: 16px;
+  --radius-card: 24px;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Soft glows on a fixed layer so scrolling never repaints them. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(60% 50% at 85% 0%, var(--glow-1), transparent 70%),
+    radial-gradient(50% 45% at 10% 100%, var(--glow-2), transparent 70%);
+}
+
+/* ---------- App shell ---------- */
+
+.app-sidebar {
+  width: 240px;
+}
+.app-content {
+  padding-left: 264px;
+}
+html[data-sidebar="compact"] .app-sidebar {
+  width: 72px;
+}
+html[data-sidebar="compact"] .app-content {
+  padding-left: 96px;
+}
+html[data-sidebar="compact"] .sidebar-label {
+  display: none;
+}
+@media (max-width: 1023px) {
+  .app-content,
+  html[data-sidebar="compact"] .app-content {
+    padding-left: 0;
+  }
+  .app-sidebar,
+  html[data-sidebar="compact"] .app-sidebar {
+    width: 240px;
+    translate: calc(-100% - 24px) 0;
+    transition: translate var(--duration-move) cubic-bezier(0.2, 0, 0, 1);
+  }
+  html[data-sidebar="compact"] .sidebar-label {
+    display: revert;
+  }
+  html[data-drawer="open"] .app-sidebar {
+    translate: 0 0;
+  }
+  html[data-drawer="open"] .drawer-backdrop {
+    display: block;
+  }
+}
+
+/* Live "ping" on map dots and the live indicator. */
+@keyframes ping {
+  from {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  to {
+    transform: scale(3.2);
+    opacity: 0;
+  }
+}
+.ping {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: ping 2.4s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+/* ---------- View transitions ---------- */
+
+:root {
+  --duration-exit: 150ms;
+  --duration-enter: 210ms;
+  --duration-move: 400ms;
+}
+
+/* Clicks pass through to the live page during transitions. */
+::view-transition {
+  pointer-events: none;
+}
+
+/* Header stays put while page content slides. */
+.site-header {
+  view-transition-name: site-header;
+}
+::view-transition-group(site-header) {
+  animation: none;
+  z-index: 100;
+}
+::view-transition-old(site-header) {
+  display: none;
+}
+::view-transition-new(site-header) {
+  animation: none;
+}
+/* Sidebar is anchored the same way, except during its own compact/wide toggle. */
+.app-sidebar {
+  view-transition-name: app-sidebar;
+}
+::view-transition-group(app-sidebar) {
+  z-index: 101;
+}
+html:not(.vt-sidebar)::view-transition-group(app-sidebar),
+html:not(.vt-sidebar)::view-transition-new(app-sidebar) {
+  animation: none;
+}
+html:not(.vt-sidebar)::view-transition-old(app-sidebar) {
+  display: none;
+}
+
+/* Shared-element morph (post card <-> post detail). */
+::view-transition-group(.morph) {
+  animation-duration: var(--duration-move);
+  animation-timing-function: cubic-bezier(0.2, 0, 0, 1);
+}
+::view-transition-image-pair(.morph) {
+  animation-name: via-blur;
+}
+@keyframes via-blur {
+  30% {
+    filter: blur(3px);
+  }
+}
+
+/* Directional page slides. */
+::view-transition-old(.nav-forward) {
+  --slide-offset: -60px;
+  animation:
+    var(--duration-exit) ease-in both fade reverse,
+    var(--duration-move) ease-in-out both slide reverse;
+}
+::view-transition-new(.nav-forward) {
+  --slide-offset: 60px;
+  animation:
+    var(--duration-enter) ease-out var(--duration-exit) both fade,
+    var(--duration-move) ease-in-out both slide;
+}
+::view-transition-old(.nav-back) {
+  --slide-offset: 60px;
+  animation:
+    var(--duration-exit) ease-in both fade reverse,
+    var(--duration-move) ease-in-out both slide reverse;
+}
+::view-transition-new(.nav-back) {
+  --slide-offset: -60px;
+  animation:
+    var(--duration-enter) ease-out var(--duration-exit) both fade,
+    var(--duration-move) ease-in-out both slide;
+}
+
+/* Suspense reveal: skeleton leaves, real content rises in. */
+::view-transition-old(.slide-down) {
+  animation: var(--duration-exit) ease-out both fade reverse;
+}
+::view-transition-new(.slide-up) {
+  animation:
+    var(--duration-enter) ease-in var(--duration-exit) both fade,
+    var(--duration-move) ease-in both slide-y;
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes slide {
+  from {
+    translate: var(--slide-offset);
+  }
+  to {
+    translate: 0;
+  }
+}
+@keyframes slide-y {
+  from {
+    translate: 0 10px;
+  }
+  to {
+    translate: 0 0;
+  }
+}
+
+/* Isolated document transitions (theme, sidebar): only the names they set animate. */
+.vt-isolated * {
+  view-transition-name: none !important;
+}
+/* Theme: quick crossfade of the whole page. */
+.vt-theme::view-transition-old(root),
+.vt-theme::view-transition-new(root) {
+  animation-duration: 280ms;
+  animation-timing-function: ease-out;
+}
+
+/* Sidebar toggle: one layout change, then GPU-only motion. Each group slides
+   and resizes while clipping two opaque, unscaled snapshots (new above old),
+   so labels are clipped away or revealed instead of stretched or ghosted. */
+.vt-sidebar .app-sidebar {
+  view-transition-name: app-sidebar !important;
+}
+.vt-sidebar .app-main {
+  view-transition-name: app-main !important;
+}
+.vt-sidebar::view-transition-group(app-sidebar),
+.vt-sidebar::view-transition-group(app-main) {
+  overflow: clip;
+  animation-duration: var(--duration-move);
+  animation-timing-function: cubic-bezier(0.2, 0, 0, 1);
+}
+.vt-sidebar::view-transition-group(app-sidebar) {
+  border-radius: 24px;
+}
+.vt-sidebar::view-transition-old(app-sidebar),
+.vt-sidebar::view-transition-new(app-sidebar),
+.vt-sidebar::view-transition-old(app-main),
+.vt-sidebar::view-transition-new(app-main) {
+  animation: none;
+  mix-blend-mode: normal;
+  width: auto;
+  height: auto;
+  object-fit: none;
+  object-position: left top;
+}
+/* Content has transparent gaps between cards, so the old layout would show
+   through them; slide only the new snapshot. */
+.vt-sidebar::view-transition-old(app-main) {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(*),
+  ::view-transition-new(*),
+  ::view-transition-group(*) {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+  }
+  .ping {
+    animation: none;
+  }
+}

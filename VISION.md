@@ -55,8 +55,11 @@ What it shows and what we want to match:
 | Mock data | **Content/CMS analytics** (posts, views, authors, publishing), which lines up with future Payload use |
 | Devices | **Desktop-first**; mobile responsive and usable, less refined |
 | Live feel | **Light ticking**: a few KPIs and one chart update every few seconds, with a pause toggle |
-| Dark mode | **Yes**, with an animated theme toggle (view transition reveal) |
+| Dark mode | **Yes**, with a short crossfade when switching (the circle reveal was dropped on 2026-10-26: it stuttered and didn't look right) |
 | Hosting | **Vercel**, so we get preview URLs and Lighthouse runs on a real URL |
+| Enter animations | **First visit only**; revisits restore the kept page as it was (see `SPIKE.md`) |
+| Brand | **Pretty CMS**, using the Kiln palette: ember accent `#d24100` on cool lavender (see `DESIGN_TOKENS.md`) |
+| Scope additions | Sidebar (compact/wide), traffic map, Core Web Vitals, AI readiness, scheduled posts |
 
 ## Principles
 
@@ -96,6 +99,32 @@ What it shows and what we want to match:
 **Considered and rejected for now: Vite + React + TanStack Router.** It's simpler and faster to iterate on, but would mean migrating to Next later for Payload.
 
 Either way, keep the dashboard components **framework-agnostic**: plain React + Tailwind + Motion, with no framework-specific APIs inside the components. That keeps the choice reversible.
+
+## Additions (accepted 2026-10-26: sidebar + all four widgets with mock data; PageSpeed Insights is the one real integration)
+
+### Sidebar: compact and wide
+- **Wide** (~240px): icon + label + section groups (Content, Analytics, Settings), workspace switcher, a usage meter at the bottom.
+- **Compact** (~72px): icon rail like the benchmark, with tooltips on hover.
+- Toggle via button and `⌘B`, remembered per viewer. Below 1024px it becomes an off-canvas drawer.
+- shadcn's `Sidebar` component already has an icon-only collapsed mode, so we start from it.
+- **Animation:** animating width causes layout reflow, which breaks our transform-only rule. Instead the content column slides with a transform while the rail grows, and labels fade/slide in (Motion). The active item uses a shared `layoutId` highlight, like the nav pill.
+- **Role split:** the sidebar becomes the page navigation. The top pill nav switches views within a page (e.g. Overview: Traffic / Content / SEO). This removes the duplication between the two.
+
+### Widgets
+| Widget | What it shows | Data in the demo | Real source later |
+|---|---|---|---|
+| **Traffic map** | Visitors by country (sequential shading) + pulsing "live" dots per city; hover shows a tooltip, click filters the dashboard | Mock, seeded, light ticking | Plausible / Umami / GA4 Data API / Cloudflare Web Analytics |
+| **PageSpeed / Core Web Vitals** | LCP, INP, CLS as gauges against the good/needs-improvement/poor thresholds; Lighthouse category scores; 28-day trend line | **Could be real**: the PageSpeed Insights API is free and returns lab scores *and* CrUX field data from real users | Same API, or the CrUX API for history |
+| **AI readiness score** | One 0–100 score + a checklist: `llms.txt`, JSON-LD structured data, AI-crawler rules in robots.txt (GPTBot, ClaudeBot, PerplexityBot…), heading structure, meta descriptions, alt text, content freshness. Per site and per post | Mock score + checklist | Our own checker that fetches the site and parses these signals (a small server route) |
+| **Scheduled posts / editorial calendar** | Week strip or list of upcoming posts with status; drag to reschedule (Motion `Reorder`/layout); to-do items attached to posts | Mock | Payload's drafts and scheduled publishing |
+
+### Other integrations worth considering
+- **Google Search Console**: queries, clicks, CTR, average position per post. Pairs well with the AI readiness score.
+- **Vercel deployments / build status**: shows which content went live.
+- **Uptime / error rate**: a small status tile.
+- **Newsletter stats** (e.g. Resend, Beehiiv): sends, opens, clicks per post.
+
+**Recommendation for the demo:** build all four widgets plus the sidebar with **mock data**. Make PageSpeed Insights the **one real integration**: it needs no account (just an optional API key), and it shows that the dashboard handles real async data without breaking the animations. Everything else stays mock until the Payload phase.
 
 ## Out of scope (for the demo)
 

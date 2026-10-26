@@ -20,7 +20,7 @@ Build a **demo** content-analytics dashboard for a CMS. It should be *inspired b
 - Check the latest stable versions before installing. Tell me if a feature we rely on (e.g. React/Next view transitions) is still experimental, and what the fallback is.
 
 ## Who owns which animation
-- **View Transition API**: route changes, shared elements that persist across pages (page title, post card → post detail, nav), and the theme toggle (circular reveal from the toggle button).
+- **View Transition API**: route changes, shared elements that persist across pages (page title, post card → post detail, nav), and the theme toggle (a short whole-page crossfade).
 - **Motion**: anything inside a page: stagger on enter, hover lift (`whileHover={{ y: -4 }}`), sliding nav pill (`layoutId`), number tickers, presence animations.
 - **Chart library**: chart draw-in and tweens when data changes.
 - Never let two systems animate the same element at the same time.
